@@ -13,19 +13,27 @@ export class AppComponent implements OnInit {
   family = [];
   genderFriend = '';
 
+
   constructor(private membersService: MembersService) { }
 
 
   ngOnInit() {
-    this.family = this.membersService.getFamily();
+    this.membersService.getFamily().subscribe(resp => {
+      this.family = [...resp.members];
+    });
   }
 
   getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min)) + min;
   }
 
-  requestFriend(algo: string) {
-    console.log(algo);
+  onClick(algo: string) {
+    if (algo === '') {
+      const messageVacio = `Ingresa un nombre! \uD83D\uDE1C`;
+      alert(messageVacio);
+      return;
+    }
+
     let name = algo.toLowerCase();
     const chart = name[0];
     name = name.replace(chart, chart.toUpperCase());
@@ -33,9 +41,9 @@ export class AppComponent implements OnInit {
     const exists = this.family.find(x => {
       return x.name === name;
     });
+
     if (!exists) {
       const messageExists = `${name}  no existe en nuestra Familia! \uD83D\uDE1C`;
-      M.toast({ html: messageExists });
       alert(messageExists);
       return;
     }
@@ -47,13 +55,16 @@ export class AppComponent implements OnInit {
 
     if (free) {
       const messageFree = `${name} ya tienes amiguito!
-      Solo te puedo decir que es  ${this.genderFriend}  \uD83D\uDE1C`;
-      M.toast({ html: messageFree });
+      \uD83D\uDE1C`;
       alert(messageFree);
       this.genderFriend = '';
       return;
     }
-    // tslint:disable-next-line: no-shadowed-variable
+
+    this.requestFriend(name);
+  }
+
+  requestFriend(name: string) {
     const freeNames = this.family.filter(free => {
       return free.selected === false && free.name !== name;
     });
@@ -63,17 +74,22 @@ export class AppComponent implements OnInit {
     const message = `Tú amigo secreto es:
     \u2764\uFE0F  ${secret}`;
     alert(message);
-    M.toast({ html: message });
-    // Actualiza secretFriend
-    // Actualiza selected
     this.family.forEach(member => {
       if (member.name === secret) {
         member.selected = true;
+        this.membersService.updateMember(member).then(respo => {
+          console.log(respo);
+        });
       }
       if (member.name === name) {
         member.secretFriend = secret;
+        this.membersService.updateMember(member).then(respon => {
+          console.log(respon);
+        });
       }
     });
+
+
   }
 
 }

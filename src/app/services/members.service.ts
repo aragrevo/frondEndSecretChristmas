@@ -1,34 +1,34 @@
 import { Injectable } from '@angular/core';
+import { HttpHeaders, HttpClient, HttpResponse } from '@angular/common/http';
+import { map } from 'rxjs/operators';
+import { ResponseFamily, Member } from '../interfaces/interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MembersService {
 
-  family = [
-    // tslint:disable-next-line: max-line-length
-    { name: 'Elvira', secretFriend: 'Eduardo', selected: false, gender: 'Femenino', avatar: 'https://image.flaticon.com/icons/png/512/921/921076.png' },
-    // tslint:disable-next-line: max-line-length
-    { name: 'Herlinda', secretFriend: '', selected: false, gender: 'Femenino', avatar: 'https://image.flaticon.com/icons/png/512/921/921098.png' },
-    // tslint:disable-next-line: max-line-length
-    { name: 'Eduardo', secretFriend: '', selected: true, gender: 'Masculino', avatar: 'https://image.flaticon.com/icons/png/512/921/921110.png' },
-    // tslint:disable-next-line: max-line-length
-    { name: 'Adriana', secretFriend: '', selected: false, gender: 'Femenino', avatar: 'https://image.flaticon.com/icons/png/512/921/921089.png' },
-    // tslint:disable-next-line: max-line-length
-    { name: 'José', secretFriend: '', selected: false, gender: 'Masculino', avatar: 'https://image.flaticon.com/icons/png/512/1090/premium/1090783.png' },
-    // tslint:disable-next-line: max-line-length
-    { name: 'Luisa', secretFriend: '', selected: false, gender: 'Femenino', avatar: 'https://image.flaticon.com/icons/png/512/921/921094.png' },
-    // tslint:disable-next-line: max-line-length
-    { name: 'Hugo', secretFriend: '', selected: false, gender: 'Masculino', avatar: 'https://image.flaticon.com/icons/png/512/921/921108.png' },
-    // tslint:disable-next-line: max-line-length
-    { name: 'Mechis', secretFriend: '', selected: false, gender: 'Femenino', avatar: 'https://image.flaticon.com/icons/png/512/921/921126.png' },
-    // tslint:disable-next-line: max-line-length
-    { name: 'Martin', secretFriend: '', selected: false, gender: 'Masculino', avatar: 'https://image.flaticon.com/icons/png/512/921/921077.png' }
-  ];
+  URL = 'https://secretfriendchristmas.herokuapp.com/api';
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   getFamily() {
-    return this.family;
+    return this.http.get<ResponseFamily>(this.URL);
+  }
+
+  updateMember(member: Member) {
+    const id = member._id;
+    return new Promise(resolve => {
+      this.http.post(`${this.URL}/${id}`, member)
+        .subscribe(resp => {
+          // tslint:disable-next-line: no-string-literal
+          if (!resp['ok']) {
+            resolve(false);
+            return;
+          }
+
+          resolve(true);
+        });
+    });
   }
 }

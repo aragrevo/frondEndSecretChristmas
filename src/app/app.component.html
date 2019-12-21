@@ -1,22 +1,22 @@
 <div class="hero-image container">
-  <div class="row valign-wrapper">
+  <div class="row m-valign-wrapper">
 
     <div class="col s12 m7">
-
       <ul class="collection">
-        <li class="card collection-item avatar valign-wrapper col m6" *ngFor="let member of family">
+        <li class="card collection-item avatar valign-wrapper col s6 " *ngFor="let member of family"
+          [ngClass]="{'teal lighten-2': member.secretFriend !== ''}">
           <img [src]="member.avatar" alt="" class="circle">
           <div>
             <span class="title">{{member.name}}</span>
-            <p>Seleccionado? {{member.selected}}</p>
             <span class="secondary-content" *ngIf="member.secretFriend !== ''"><i
-                class="material-icons">grade</i></span>
+                class="material-icons white-text">grade</i></span>
           </div>
         </li>
       </ul>
     </div>
-    <div class="col s12 m4 offset-m1">
 
+
+    <div class="col s12 m4 offset-m1">
       <div class="card-panel hoverable">
         <img class="circle responsive-img" src="https://cdn.stocksnap.io/img-thumbs/960w/SIINMUDKJB.jpg">
         <form>
@@ -26,15 +26,16 @@
             </div>
 
             <div class="input-field col s10 offset-s1">
-              <input id="name" type="text" class="validate" #name required>
+              <input id="nombre" type="text" class="validate" #nombre required>
 
-              <label for="name">Nombre</label>
-              <span class="helper-text" data-error="wrong" data-success="right">Ingresa tu nombre</span>
+              <label for="nombre">Nombre</label>
+              <span class="helper-text" data-error="Datos Incorrectos" data-success="Muy bien!!">Ingresa tu
+                nombre</span>
             </div>
           </div>
 
         </form>
-        <button class="btn waves-effect waves-light" (click)="requestFriend(name.value)">Solicitar
+        <button class="btn waves-effect waves-light" (click)="onClick(nombre.value)">Solicitar
           <i class="material-icons right">send</i>
         </button>
       </div>
